@@ -40,12 +40,12 @@ body {
 .header-flex {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
 }
 
 .logo-box {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 8rem;
+  height: 8rem;
   background-color: transparent;
   border-radius: var(--radius);
   display: flex;
@@ -60,22 +60,7 @@ body {
   object-fit: contain;
 }
 
-.logo-text {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
-}
-
-.header-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--foreground);
-}
-
-.header-subtitle {
-  font-size: 0.875rem;
-  color: var(--muted-foreground);
-}
+/* Classes de título removidas */
 
 .main-content {
   padding: 2rem 1rem;
