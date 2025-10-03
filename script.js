@@ -423,6 +423,40 @@ function generateAndSharePDF() {
   });
 }
 
+// Função para visualizar o PDF sem baixá-lo
+function previewPDF() {
+  generatePDF(function(doc) {
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    
+    // Criar modal para visualizar o PDF
+    const modal = document.createElement('div');
+    modal.className = 'pdf-modal';
+    modal.innerHTML = `
+      <div class="pdf-modal-content">
+        <div class="pdf-modal-header">
+          <h3>Visualização do Orçamento</h3>
+          <button class="pdf-modal-close">&times;</button>
+        </div>
+        <div class="pdf-modal-body">
+          <iframe src="${url}" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden'; // Impedir rolagem da página
+    
+    // Adicionar evento para fechar o modal
+    const closeBtn = modal.querySelector('.pdf-modal-close');
+    closeBtn.addEventListener('click', function() {
+      document.body.removeChild(modal);
+      document.body.style.overflow = ''; // Restaurar rolagem
+      URL.revokeObjectURL(url); // Liberar recursos
+    });
+  });
+}
+
 function generatePDF(callback) {
   // Carregar o logo antes de gerar o PDF
   getImageBase64('https://raw.githubusercontent.com/Guubal/hfn/main/logo.png', function(base64Logo, imgWidth, imgHeight) {
@@ -503,6 +537,16 @@ function generatePDF(callback) {
     const dateStr = currentDate.toLocaleDateString("pt-BR")
     const orcamentoNum = `ORÇ-${currentDate.getTime().toString().slice(-6)}`
 
+    // Adicionar sombra (um retângulo ligeiramente deslocado e com cor mais escura)
+    // Usar uma cor mais suave para a sombra (cinza com transparência)
+    doc.setFillColor(180, 180, 180) // Cor cinza médio para a sombra
+    doc.roundedRect(142, 12, 60, 25, 3, 3, "F") // Deslocado 2 pontos para baixo e direita
+    
+    // Segunda camada de sombra para dar um efeito de gradiente
+    doc.setFillColor(200, 200, 200) // Cor cinza mais claro
+    doc.roundedRect(141, 11, 60, 25, 3, 3, "F") // Deslocado 1 ponto para baixo e direita
+    
+    // Retângulo branco principal por cima da sombra
     doc.setFillColor(...white)
     doc.roundedRect(140, 10, 60, 25, 3, 3, "F")
     doc.setFontSize(9)
@@ -664,7 +708,7 @@ function generatePDF(callback) {
     // Itens do Orçamento - Estilo Card
     doc.setFillColor(...bgMuted)
     doc.setDrawColor(...border)
-    doc.roundedRect(15, yPosition, 180, 10 + (budgetItems.length * 15) + 20, 3, 3, "FD")
+    doc.roundedRect(15, yPosition, 180, 10 + (budgetItems.length * 15) + 30, 3, 3, "FD")
     
     // Título do card
     doc.setFontSize(11)
@@ -675,7 +719,7 @@ function generatePDF(callback) {
     // Linha separadora
     doc.setDrawColor(...border)
     doc.setLineWidth(0.5)
-    doc.line(25, yPosition + 13, 185, yPosition + 13)
+    doc.line(clientCardX + 10, yPosition + 13, 185, yPosition + 13)
     
     let itemsYPos = yPosition + 20
     doc.setFontSize(10)
