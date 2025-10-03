@@ -1,0 +1,58 @@
+<!-- Conteúdo do Recibo -->
+<div class="card receipt-card">
+    <h2 class="form-title">Recibo de Pagamento</h2>
+    <p class="form-subtitle">Preencha os dados do pagamento</p>
+    
+    <div class="form-group">
+        <label for="receipt-value">Valor Recebido (R$)</label>
+        <input type="number" id="receipt-value" min="0" step="0.01" placeholder="0,00">
+    </div>
+
+    <div class="form-group">
+        <label for="receipt-payment-method">Forma de Pagamento</label>
+        <select id="receipt-payment-method" class="form-select">
+            <option value="">Selecione uma forma de pagamento</option>
+            <option value="dinheiro">Dinheiro</option>
+            <option value="pix">PIX</option>
+            <option value="cartao_credito">Cartão de Crédito</option>
+            <option value="cartao_debito">Cartão de Débito</option>
+            <option value="transferencia">Transferência Bancária</option>
+            <option value="cheque">Cheque</option>
+            <option value="outro">Outro</option>
+        </select>
+    </div>
+
+    <div class="form-group" id="receipt-payment-details-container" style="display: none;">
+        <label for="receipt-payment-details">Detalhes do Pagamento</label>
+        <input type="text" id="receipt-payment-details" placeholder="Ex: Parcelas, identificador PIX, etc.">
+    </div>
+
+    <div class="form-group">
+        <label for="receipt-date">Data do Pagamento</label>
+        <input type="date" id="receipt-date">
+    </div>
+
+    <div class="form-group">
+        <label for="receipt-notes">Observações</label>
+        <textarea id="receipt-notes" rows="3" placeholder="Observações adicionais sobre o pagamento"></textarea>
+    </div>
+
+    <div class="receipt-preview-container" style="margin-top: 2rem;">
+        <h3 class="form-subtitle">Prévia do Recibo</h3>
+        <div id="receipt-preview" class="receipt-preview">
+            <p class="empty-message">Preencha os dados acima para visualizar a prévia do recibo</p>
+        </div>
+        
+        <div class="pdf-buttons-container">
+            <button type="button" class="btn-pdf-small" onclick="generateReceiptPDF()">
+                <span id="receipt-save-icon"></span> Salvar PDF
+            </button>
+            <button type="button" class="btn-pdf-small btn-preview" onclick="previewReceiptPDF()">
+                <span id="receipt-preview-icon"></span> Visualizar PDF
+            </button>
+            <button type="button" class="btn-pdf-small btn-share" onclick="shareReceiptPDF()">
+                <span id="receipt-share-icon"></span> Compartilhar
+            </button>
+        </div>
+    </div>
+</div>

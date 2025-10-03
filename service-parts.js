@@ -1,7 +1,9 @@
 // Lista de peças de funilaria
 const pecasFunilaria = [
   'Para-choque dianteiro',
+  'Parachoque dianteiro',
   'Para-choque traseiro',
+  'Parachoque traseiro',
   'Capô',
   'Teto',
   'Porta dianteira direita',
@@ -45,6 +47,7 @@ const pecasFunilaria = [
   'Farol dianteiro direito',
   'Farol dianteiro esquerdo',
   'Vidro para-brisa',
+  'Vidro dianteiro',  
   'Vidro traseiro',
   'Vidro porta dianteira direita',
   'Vidro porta dianteira esquerda',
@@ -61,9 +64,13 @@ const pecasFunilaria = [
   'Monobloco',
   'Colméia do radiador',
   'Suporte do para-choque',
+  'Suporte do parachoque',
   'Amortecedor de impacto do para-choque',
+  'Amortecedor de impacto do parachoque',
   'Para-lama traseiro direito',
-  'Para-lama traseiro esquerdo'
+  'Paralama traseiro direito',
+  'Para-lama traseiro esquerdo',
+  'Paralama traseiro esquerdo'
 ];
 
 // Tipos de serviços de funilaria
@@ -156,6 +163,7 @@ function gerarDescricoesServicos() {
     "Correção de casca de laranja",
     "Remoção de respingo de tinta",
     "Reparo de encaixe de para-choque",
+    "Reparo de encaixe de parachoque",
     "Soldagem de plásticos",
 
     // Adesivagem, Envelopamento, Proteção
@@ -168,6 +176,7 @@ function gerarDescricoesServicos() {
     "Lavagem técnica",
     "Lavagem completa",
     "Higienização de ar-condicionado",
+    "Higienização de arcondicionado",
     "Descontaminação de pintura",
     "Descontaminação de vidro",
     "Lavagem de motor",
