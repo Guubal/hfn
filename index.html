@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HFN Funilaria - Sistema de Orçamentos</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-flex">
+                <div class="logo-box">
+                    <img src="logo.jpeg" alt="Logo HFN Funilaria" class="logo-image">
+                </div>
+                <div>
+                    <h1 class="header-title">HFN Funilaria</h1>
+                    <p class="header-subtitle">Sistema de Orçamentos</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Indicador de Etapas -->
+            <div class="steps-indicator">
+                <div class="step-item">
+                    <div class="step-wrapper">
+                        <div class="step-circle" data-step="1">1</div>
+                        <span class="step-label" data-step-label="1">Cliente</span>
+                    </div>
+                    <div class="step-line" data-line="1"></div>
+                </div>
+                <div class="step-item">
+                    <div class="step-wrapper">
+                        <div class="step-circle" data-step="2">2</div>
+                        <span class="step-label" data-step-label="2">Veículo</span>
+                    </div>
+                    <div class="step-line" data-line="2"></div>
+                </div>
+                <div class="step-item">
+                    <div class="step-wrapper">
+                        <div class="step-circle" data-step="3">3</div>
+                        <span class="step-label" data-step-label="3">Orçamento</span>
+                    </div>
+                    <div class="step-line" data-line="3"></div>
+                </div>
+                <div class="step-item">
+                    <div class="step-wrapper">
+                        <div class="step-circle" data-step="4">4</div>
+                        <span class="step-label" data-step-label="4">Finalizar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Principal -->
+            <div class="card">
+                <!-- Etapa 1: Dados do Cliente -->
+                <div id="step-1" class="step-content active">
+                    <h2 class="form-title">Dados do Cliente</h2>
+                    <p class="form-subtitle">Todos os campos são opcionais</p>
+                    
+                    <div class="form-group">
+                        <label for="client-name">Nome</label>
+                        <input type="text" id="client-name" placeholder="Nome completo do cliente">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="client-address">Endereço</label>
+                        <input type="text" id="client-address" placeholder="Endereço completo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="client-phone">Telefone</label>
+                        <input type="tel" id="client-phone" placeholder="(00) 00000-0000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="client-email">E-mail</label>
+                        <input type="email" id="client-email" placeholder="email@exemplo.com">
+                    </div>
+                </div>
+
+                <!-- Etapa 2: Dados do Veículo -->
+                <div id="step-2" class="step-content">
+                    <h2 class="form-title">Dados do Veículo</h2>
+                    <p class="form-subtitle">Informações do veículo a ser reparado</p>
+                    
+                    <div class="form-group">
+                        <label for="vehicle-name">Veículo</label>
+                        <input type="text" id="vehicle-name" placeholder="Ex: Fiat Uno">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehicle-model">Modelo</label>
+                        <input type="text" id="vehicle-model" placeholder="Ex: Vivace 1.0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehicle-plate">Placa</label>
+                        <input type="text" id="vehicle-plate" placeholder="ABC-1234">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehicle-year">Ano</label>
+                        <input type="text" id="vehicle-year" placeholder="2020">
+                    </div>
+                </div>
+
+                <!-- Etapa 3: Orçamento -->
+                <div id="step-3" class="step-content">
+                    <h2 class="form-title">Itens do Orçamento</h2>
+                    <p class="form-subtitle">Adicione peças e serviços</p>
+                    
+                    <div class="budget-form">
+                        <div class="form-group">
+                            <label for="item-description">Descrição</label>
+                            <input type="text" id="item-description" placeholder="Ex: Pintura porta dianteira">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="item-quantity">Quantidade</label>
+                                <input type="number" id="item-quantity" min="1" value="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="item-price">Valor Unitário (R$)</label>
+                                <input type="number" id="item-price" min="0" step="0.01" placeholder="0,00">
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn-add" onclick="addBudgetItem()">
+                            <span>+</span> Adicionar Item
+                        </button>
+                    </div>
+
+                    <div id="budget-items-list" class="budget-items-list"></div>
+                </div>
+
+                <!-- Etapa 4: Revisão e PDF -->
+                <div id="step-4" class="step-content">
+                    <h2 class="form-title">Revisão do Orçamento</h2>
+                    <p class="form-subtitle">Confira os dados antes de gerar o PDF</p>
+                    
+                    <div id="preview-content" class="preview-content"></div>
+                    
+                    <button type="button" class="btn-generate-pdf" onclick="generatePDF()">
+                        Gerar PDF do Orçamento
+                    </button>
+                </div>
+
+                <!-- Botões de Navegação -->
+                <div class="navigation-buttons">
+                    <button type="button" class="btn btn-outline" id="btn-prev" onclick="prevStep()">
+                        ← Voltar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btn-next" onclick="nextStep()">
+                        Próximo →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Total do Orçamento (visível na etapa 3) -->
+            <div id="total-display" class="total-display" style="display: none;">
+                <p class="total-label">Total do Orçamento</p>
+                <p class="total-value" id="total-value">R$ 0,00</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
