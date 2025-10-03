@@ -60,9 +60,7 @@ input.awesomplete {
 }
 
 /* Estilos comuns para todos os campos com ícones */
-#vehicle-name, #vehicle-model, #vehicle-plate, #vehicle-year,
-#client-name, #client-address, #client-phone, #client-email,
-.with-icon {
+#vehicle-name, #vehicle-model, #vehicle-plate, #vehicle-year {
     padding-left: 2.5rem;
     box-sizing: border-box;
     width: 100%;
@@ -72,17 +70,13 @@ input.awesomplete {
 }
 
 /* Efeito de hover para os campos com ícones */
-#vehicle-name:hover, #vehicle-model:hover, #vehicle-plate:hover, #vehicle-year:hover,
-#client-name:hover, #client-address:hover, #client-phone:hover, #client-email:hover,
-.with-icon:hover {
+#vehicle-name:hover, #vehicle-model:hover, #vehicle-plate:hover, #vehicle-year:hover {
     border-color: var(--primary);
     box-shadow: 0 0 0 2px rgba(255, 180, 0, 0.1);
 }
 
 /* Efeito de foco para os campos com ícones */
-#vehicle-name:focus, #vehicle-model:focus, #vehicle-plate:focus, #vehicle-year:focus,
-#client-name:focus, #client-address:focus, #client-phone:focus, #client-email:focus,
-.with-icon:focus {
+#vehicle-name:focus, #vehicle-model:focus, #vehicle-plate:focus, #vehicle-year:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(255, 180, 0, 0.2);
@@ -141,67 +135,30 @@ input.awesomplete {
     background-repeat: no-repeat, no-repeat;
 }
 
-/* Estilo específico para a lista de anos e descrição */
-#vehicle-year + div.awesomplete > ul,
-#item-description + div.awesomplete > ul {
+/* Estilo específico para a lista de anos */
+#vehicle-year + div.awesomplete > ul {
     max-height: 300px;
     overflow-y: auto;
     scrollbar-width: thin;
 }
 
 /* Estilizando a barra de rolagem para navegadores baseados em WebKit */
-#vehicle-year + div.awesomplete > ul::-webkit-scrollbar,
-#item-description + div.awesomplete > ul::-webkit-scrollbar {
+#vehicle-year + div.awesomplete > ul::-webkit-scrollbar {
     width: 6px;
 }
 
-#vehicle-year + div.awesomplete > ul::-webkit-scrollbar-track,
-#item-description + div.awesomplete > ul::-webkit-scrollbar-track {
+#vehicle-year + div.awesomplete > ul::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 10px;
 }
 
-#vehicle-year + div.awesomplete > ul::-webkit-scrollbar-thumb,
-#item-description + div.awesomplete > ul::-webkit-scrollbar-thumb {
+#vehicle-year + div.awesomplete > ul::-webkit-scrollbar-thumb {
     background: var(--primary);
     border-radius: 10px;
 }
 
-#vehicle-year + div.awesomplete > ul::-webkit-scrollbar-thumb:hover,
-#item-description + div.awesomplete > ul::-webkit-scrollbar-thumb:hover {
+#vehicle-year + div.awesomplete > ul::-webkit-scrollbar-thumb:hover {
     background: #d29300;
-}
-
-/* Estilo específico para o campo de nome do cliente */
-#client-name {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(125, 125, 138)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>');
-}
-
-/* Estilo específico para o campo de endereço do cliente */
-#client-address {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(125, 125, 138)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>');
-}
-
-/* Estilo específico para o campo de telefone do cliente */
-#client-phone {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(125, 125, 138)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>');
-}
-
-/* Estilo específico para o campo de e-mail do cliente */
-#client-email {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(125, 125, 138)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>');
-}
-
-/* Estilo específico para o campo de descrição */
-#item-description.awesomplete {
-    padding-left: 2.5rem;
-    background-image: 
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(125, 125, 138)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>'),
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(125, 125, 138)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-    background-position: 
-        left 0.75rem center,
-        right 0.75rem center;
-    background-repeat: no-repeat, no-repeat;
 }
 
 /* Efeito de destaque para seleção */
