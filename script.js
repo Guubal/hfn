@@ -3,6 +3,10 @@ let currentStep = 1
 let budgetItems = []
 let itemIdCounter = 0
 
+// Flag para controlar quando o autocomplete pode ser ativado
+// Isso evita que as sugestões apareçam automaticamente durante a transição entre etapas
+window.allowAutocomplete = true
+
 // Dados do formulário
 const formData = {
   client: {
@@ -28,6 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
 // Navegação entre etapas
 function nextStep() {
   if (currentStep < 4) {
+    // Desativar autocomplete durante a transição
+    window.allowAutocomplete = false
+    
     saveCurrentStepData()
     currentStep++
     updateStepDisplay()
@@ -40,11 +47,19 @@ function nextStep() {
     if (currentStep === 3) {
       updateTotalDisplay()
     }
+    
+    // Reativar autocomplete após um pequeno atraso
+    setTimeout(() => {
+      window.allowAutocomplete = true
+    }, 500)
   }
 }
 
 function prevStep() {
   if (currentStep > 1) {
+    // Desativar autocomplete durante a transição
+    window.allowAutocomplete = false
+    
     saveCurrentStepData()
     currentStep--
     updateStepDisplay()
@@ -53,6 +68,11 @@ function prevStep() {
     if (currentStep === 3) {
       updateTotalDisplay()
     }
+    
+    // Reativar autocomplete após um pequeno atraso
+    setTimeout(() => {
+      window.allowAutocomplete = true
+    }, 500)
   }
 }
 
@@ -214,312 +234,544 @@ function renderPreview() {
   let html = ""
 
   // Dados do Cliente
+  html += `
+    <div class="rounded-lg border bg-muted/50 p-4">
+      <h3 class="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+        ${icons.fileText}
+        Dados do Cliente
+      </h3>
+      <div class="space-y-2 text-sm">
+  `
+
   if (formData.client.name || formData.client.address || formData.client.phone || formData.client.email) {
-    html += '<div class="preview-section">'
-    html += '<h3 class="preview-section-title">Dados do Cliente</h3>'
-    if (formData.client.name)
-      html += `<div class="preview-item"><span class="preview-item-label">Nome:</span><span class="preview-item-value">${formData.client.name}</span></div>`
-    if (formData.client.address)
-      html += `<div class="preview-item"><span class="preview-item-label">Endereço:</span><span class="preview-item-value">${formData.client.address}</span></div>`
-    if (formData.client.phone)
-      html += `<div class="preview-item"><span class="preview-item-label">Telefone:</span><span class="preview-item-value">${formData.client.phone}</span></div>`
-    if (formData.client.email)
-      html += `<div class="preview-item"><span class="preview-item-label">E-mail:</span><span class="preview-item-value">${formData.client.email}</span></div>`
-    html += "</div>"
+    if (formData.client.name) {
+      html += `
+        <p>
+          <span class="font-medium text-muted-foreground">Nome:</span> 
+          <span class="text-foreground">${formData.client.name}</span>
+        </p>
+      `
+    }
+    if (formData.client.address) {
+      html += `
+        <p>
+          <span class="font-medium text-muted-foreground">Endereço:</span> 
+          <span class="text-foreground">${formData.client.address}</span>
+        </p>
+      `
+    }
+    if (formData.client.phone) {
+      html += `
+        <p>
+          <span class="font-medium text-muted-foreground">Telefone:</span> 
+          <span class="text-foreground">${formData.client.phone}</span>
+        </p>
+      `
+    }
+    if (formData.client.email) {
+      html += `
+        <p>
+          <span class="font-medium text-muted-foreground">E-mail:</span> 
+          <span class="text-foreground">${formData.client.email}</span>
+        </p>
+      `
+    }
+  } else {
+    html += `<p class="text-muted-foreground">Nenhum dado informado</p>`
   }
+
+  html += `
+      </div>
+    </div>
+  `
 
   // Dados do Veículo
+  html += `
+    <div class="rounded-lg border bg-muted/50 p-4">
+      <h3 class="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+        ${icons.car}
+        Dados do Veículo
+      </h3>
+      <div class="space-y-2 text-sm">
+  `
+
   if (formData.vehicle.name || formData.vehicle.model || formData.vehicle.plate || formData.vehicle.year) {
-    html += '<div class="preview-section">'
-    html += '<h3 class="preview-section-title">Dados do Veículo</h3>'
-    if (formData.vehicle.name)
-      html += `<div class="preview-item"><span class="preview-item-label">Veículo:</span><span class="preview-item-value">${formData.vehicle.name}</span></div>`
-    if (formData.vehicle.model)
-      html += `<div class="preview-item"><span class="preview-item-label">Modelo:</span><span class="preview-item-value">${formData.vehicle.model}</span></div>`
-    if (formData.vehicle.plate)
-      html += `<div class="preview-item"><span class="preview-item-label">Placa:</span><span class="preview-item-value">${formData.vehicle.plate}</span></div>`
-    if (formData.vehicle.year)
-      html += `<div class="preview-item"><span class="preview-item-label">Ano:</span><span class="preview-item-value">${formData.vehicle.year}</span></div>`
-    html += "</div>"
+    if (formData.vehicle.name) {
+      html += `
+        <p>
+          <span class="font-medium text-muted-foreground">Veículo:</span> 
+          <span class="text-foreground">${formData.vehicle.name}</span>
+        </p>
+      `
+    }
+    if (formData.vehicle.model) {
+      html += `
+        <p>
+          <span class="font-medium text-muted-foreground">Modelo:</span> 
+          <span class="text-foreground">${formData.vehicle.model}</span>
+        </p>
+      `
+    }
+    if (formData.vehicle.plate) {
+      html += `
+        <p>
+          <span class="font-medium text-muted-foreground">Placa:</span> 
+          <span class="text-foreground">${formData.vehicle.plate}</span>
+        </p>
+      `
+    }
+    if (formData.vehicle.year) {
+      html += `
+        <p>
+          <span class="font-medium text-muted-foreground">Ano:</span> 
+          <span class="text-foreground">${formData.vehicle.year}</span>
+        </p>
+      `
+    }
+  } else {
+    html += `<p class="text-muted-foreground">Nenhum dado informado</p>`
   }
+
+  html += `
+      </div>
+    </div>
+  `
 
   // Itens do Orçamento
+  html += `
+    <div class="rounded-lg border bg-muted/50 p-4">
+      <h3 class="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+        ${icons.list}
+        Itens do Orçamento
+      </h3>
+  `
+
   if (budgetItems.length > 0) {
-    html += '<div class="preview-section">'
-    html += '<h3 class="preview-section-title">Itens do Orçamento</h3>'
-    html += '<table class="preview-table">'
-    html += "<thead><tr><th>Descrição</th><th>Qtd</th><th>Valor Unit.</th><th>Total</th></tr></thead>"
-    html += "<tbody>"
+    html += '<div class="space-y-3">'
+    
     budgetItems.forEach((item) => {
-      html += `<tr>
-                <td>${item.description}</td>
-                <td>${item.quantity}</td>
-                <td>R$ ${item.price.toFixed(2)}</td>
-                <td>R$ ${(item.quantity * item.price).toFixed(2)}</td>
-            </tr>`
+      html += `
+        <div class="flex justify-between border-b pb-3 text-sm last:border-0">
+          <div class="flex-1">
+            <p class="font-medium text-foreground">${item.description}</p>
+            <p class="text-xs text-muted-foreground">${item.quantity} × R$ ${item.price.toFixed(2)}</p>
+          </div>
+          <p class="font-semibold text-foreground">R$ ${(item.quantity * item.price).toFixed(2)}</p>
+        </div>
+      `
     })
-    html += "</tbody></table>"
-    html += '<div class="preview-total">'
-    html += '<div class="preview-total-label">VALOR TOTAL</div>'
-    html += `<div class="preview-total-value">R$ ${total.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>`
-    html += "</div>"
-    html += "</div>"
+    
+    html += `
+      <div class="mt-4 flex justify-between pt-4">
+        <span class="text-base font-semibold text-foreground">TOTAL:</span>
+        <span class="text-xl font-bold text-primary">R$ ${total.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+      </div>
+    `
+    
+    html += '</div>'
+  } else {
+    html += `<p class="text-muted-foreground">Nenhum item adicionado</p>`
   }
 
-  if (!html) {
-    html = '<p class="empty-message">Nenhum dado foi preenchido</p>'
-  }
+  html += `
+    </div>
+  `
 
   container.innerHTML = html
 }
 
-function generatePDF() {
-  const { jsPDF } = window.jspdf
-  const doc = new jsPDF()
-
-  const primaryBlue = [59, 89, 152]
-  const darkGray = [51, 51, 51]
-  const lightGray = [128, 128, 128]
-  const bgGray = [245, 245, 245]
-
-  let yPosition = 20
-
-  // Cabeçalho azul
-  doc.setFillColor(...primaryBlue)
-  doc.rect(0, 0, 210, 45, "F")
-
-  // Logo HFN
-  doc.setFillColor(255, 255, 255)
-  doc.roundedRect(15, 12, 20, 20, 3, 3, "F")
-  doc.setFontSize(16)
-  doc.setFont("helvetica", "bold")
-  doc.setTextColor(...primaryBlue)
-  doc.text("HFN", 25, 25, { align: "center" })
-
-  // Nome da empresa
-  doc.setFontSize(24)
-  doc.setFont("helvetica", "bold")
-  doc.setTextColor(255, 255, 255)
-  doc.text("HFN FUNILARIA", 40, 22)
-
-  doc.setFontSize(10)
-  doc.setFont("helvetica", "normal")
-  doc.text("Orçamento Profissional de Serviços", 40, 30)
-
-  // Número do orçamento e data
-  const currentDate = new Date()
-  const dateStr = currentDate.toLocaleDateString("pt-BR")
-  const orcamentoNum = `ORÇ-${currentDate.getTime().toString().slice(-6)}`
-
-  doc.setFontSize(9)
-  doc.setTextColor(255, 255, 255)
-  doc.text(`Nº: ${orcamentoNum}`, 195, 22, { align: "right" })
-  doc.text(`Data: ${dateStr}`, 195, 28, { align: "right" })
-  doc.text(`Validade: 15 dias`, 195, 34, { align: "right" })
-
-  yPosition = 55
-
-  // Dados do Cliente
-  if (formData.client.name || formData.client.address || formData.client.phone || formData.client.email) {
-    doc.setFillColor(...bgGray)
-    doc.rect(15, yPosition, 180, 7, "F")
-    doc.setFontSize(11)
-    doc.setFont("helvetica", "bold")
-    doc.setTextColor(...darkGray)
-    doc.text("DADOS DO CLIENTE", 20, yPosition + 5)
-
-    yPosition += 12
-
-    doc.setFontSize(10)
-    doc.setFont("helvetica", "normal")
-    doc.setTextColor(...darkGray)
-
-    if (formData.client.name) {
-      doc.setFont("helvetica", "bold")
-      doc.text("Nome:", 20, yPosition)
-      doc.setFont("helvetica", "normal")
-      doc.text(formData.client.name, 45, yPosition)
-      yPosition += 6
-    }
-    if (formData.client.address) {
-      doc.setFont("helvetica", "bold")
-      doc.text("Endereço:", 20, yPosition)
-      doc.setFont("helvetica", "normal")
-      doc.text(formData.client.address, 45, yPosition)
-      yPosition += 6
-    }
-    if (formData.client.phone) {
-      doc.setFont("helvetica", "bold")
-      doc.text("Telefone:", 20, yPosition)
-      doc.setFont("helvetica", "normal")
-      doc.text(formData.client.phone, 45, yPosition)
-      yPosition += 6
-    }
-    if (formData.client.email) {
-      doc.setFont("helvetica", "bold")
-      doc.text("E-mail:", 20, yPosition)
-      doc.setFont("helvetica", "normal")
-      doc.text(formData.client.email, 45, yPosition)
-      yPosition += 6
-    }
-
-    yPosition += 8
-  }
-
-  // Dados do Veículo
-  if (formData.vehicle.name || formData.vehicle.model || formData.vehicle.plate || formData.vehicle.year) {
-    doc.setFillColor(...bgGray)
-    doc.rect(15, yPosition, 180, 7, "F")
-    doc.setFontSize(11)
-    doc.setFont("helvetica", "bold")
-    doc.setTextColor(...darkGray)
-    doc.text("DADOS DO VEÍCULO", 20, yPosition + 5)
-
-    yPosition += 12
-
-    doc.setFontSize(10)
-    doc.setFont("helvetica", "normal")
-    doc.setTextColor(...darkGray)
-
-    if (formData.vehicle.name) {
-      doc.setFont("helvetica", "bold")
-      doc.text("Veículo:", 20, yPosition)
-      doc.setFont("helvetica", "normal")
-      doc.text(formData.vehicle.name, 45, yPosition)
-      yPosition += 6
-    }
-    if (formData.vehicle.model) {
-      doc.setFont("helvetica", "bold")
-      doc.text("Modelo:", 20, yPosition)
-      doc.setFont("helvetica", "normal")
-      doc.text(formData.vehicle.model, 45, yPosition)
-      yPosition += 6
-    }
-    if (formData.vehicle.plate) {
-      doc.setFont("helvetica", "bold")
-      doc.text("Placa:", 20, yPosition)
-      doc.setFont("helvetica", "normal")
-      doc.text(formData.vehicle.plate, 45, yPosition)
-      yPosition += 6
-    }
-    if (formData.vehicle.year) {
-      doc.setFont("helvetica", "bold")
-      doc.text("Ano:", 20, yPosition)
-      doc.setFont("helvetica", "normal")
-      doc.text(formData.vehicle.year, 45, yPosition)
-      yPosition += 6
-    }
-
-    yPosition += 8
-  }
-
-  // Itens do Orçamento
-  if (budgetItems.length > 0) {
-    doc.setFillColor(...bgGray)
-    doc.rect(15, yPosition, 180, 7, "F")
-    doc.setFontSize(11)
-    doc.setFont("helvetica", "bold")
-    doc.setTextColor(...darkGray)
-    doc.text("DISCRIMINAÇÃO DOS SERVIÇOS E PEÇAS", 20, yPosition + 5)
-
-    yPosition += 12
-
-    // Cabeçalho da tabela
-    doc.setFillColor(...primaryBlue)
-    doc.rect(15, yPosition - 2, 180, 8, "F")
-    doc.setFontSize(9)
-    doc.setFont("helvetica", "bold")
-    doc.setTextColor(255, 255, 255)
-    doc.text("DESCRIÇÃO", 20, yPosition + 3)
-    doc.text("QTD", 140, yPosition + 3, { align: "center" })
-    doc.text("VALOR UNIT.", 162, yPosition + 3, { align: "right" })
-    doc.text("TOTAL", 190, yPosition + 3, { align: "right" })
-
-    yPosition += 10
-
-    // Linhas da tabela
-    doc.setFont("helvetica", "normal")
-    doc.setTextColor(...darkGray)
-    doc.setFontSize(9)
-
-    budgetItems.forEach((item, index) => {
-      if (yPosition > 260) {
-        doc.addPage()
-        yPosition = 20
+// Função auxiliar para converter imagem URL para base64 e obter suas dimensões
+function getImageBase64(url, callback) {
+  var xhr = new XMLHttpRequest()
+  xhr.onload = function() {
+    var reader = new FileReader()
+    reader.onloadend = function() {
+      // Criar uma imagem para obter as dimensões
+      var img = new Image()
+      img.onload = function() {
+        // Chamar o callback com o base64 e as dimensões
+        callback(reader.result, img.width, img.height)
       }
+      img.src = reader.result
+    }
+    reader.readAsDataURL(xhr.response)
+  }
+  xhr.open('GET', url)
+  xhr.responseType = 'blob'
+  xhr.send()
+}
 
-      // Linha alternada
-      if (index % 2 === 0) {
-        doc.setFillColor(250, 250, 250)
-        doc.rect(15, yPosition - 3, 180, 8, "F")
+// Função para gerar e compartilhar o PDF
+function generateAndSharePDF() {
+  generatePDF(function(doc) {
+    const blob = doc.output('blob');
+    const file = new File([blob], 'orcamento_HFN.pdf', { type: "application/pdf" });
+    
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({
+        title: "Orçamento HFN",
+        text: "Segue o orçamento em PDF da HFN Funilaria!",
+        files: [file]
+      }).catch((err) => {
+        alert("Erro ao compartilhar: " + err.message);
+      });
+    } else {
+      // Caso não dê pra compartilhar, salva e avisa usuário
+      doc.save('orcamento_HFN.pdf');
+      alert("Seu navegador não permite compartilhar arquivos PDF diretamente. O arquivo foi baixado, envie manualmente pelo WhatsApp ou outro app.");
+    }
+  });
+}
+
+function generatePDF(callback) {
+  // Carregar o logo antes de gerar o PDF
+  getImageBase64('https://raw.githubusercontent.com/Guubal/hfn/main/logo.png', function(base64Logo, imgWidth, imgHeight) {
+    const { jsPDF } = window.jspdf
+    const doc = new jsPDF()
+
+    // Cores modernas
+    const primary = [255, 180, 0] // --primary: #ffb400
+    const foreground = [61, 61, 64] // --foreground: #3d3d40
+    const mutedForeground = [125, 125, 138] // --muted-foreground: #7d7d8a
+    const bgMuted = [247, 247, 248] // --muted: #f7f7f8
+    const border = [235, 235, 237] // --border: #ebebed
+    const white = [255, 255, 255]
+
+    let yPosition = 20
+
+    // Cabeçalho com cor primária
+    doc.setFillColor(...primary)
+    doc.rect(0, 0, 210, 45, "F")
+
+    // Logo HFN centralizado
+    // Calcular as dimensões mantendo a proporção
+    const logoMaxWidth = 60
+    const logoMaxHeight = 25
+    
+    // Calcular a proporção da imagem
+    const aspectRatio = imgWidth / imgHeight
+    
+    // Determinar as dimensões finais mantendo a proporção
+    let logoWidth, logoHeight
+    
+    if (imgWidth > imgHeight) {
+      // Imagem mais larga que alta
+      logoWidth = Math.min(logoMaxWidth, imgWidth)
+      logoHeight = logoWidth / aspectRatio
+      
+      // Verificar se a altura não excede o máximo
+      if (logoHeight > logoMaxHeight) {
+        logoHeight = logoMaxHeight
+        logoWidth = logoHeight * aspectRatio
       }
+    } else {
+      // Imagem mais alta que larga ou quadrada
+      logoHeight = Math.min(logoMaxHeight, imgHeight)
+      logoWidth = logoHeight * aspectRatio
+      
+      // Verificar se a largura não excede o máximo
+      if (logoWidth > logoMaxWidth) {
+        logoWidth = logoMaxWidth
+        logoHeight = logoWidth / aspectRatio
+      }
+    }
+    
+    // Centralizar o logo
+    const logoX = (210 - logoWidth) / 2
+    const logoY = 10
+    
+    // Adicionar o logo da URL
+    try {
+      doc.addImage(base64Logo, 'PNG', logoX, logoY, logoWidth, logoHeight)
+    } catch (error) {
+      // Fallback caso a imagem não carregue
+      doc.setFillColor(...white)
+      doc.roundedRect(logoX, 10, logoWidth, logoWidth / 3, 3, 3, "F")
+      doc.setFontSize(22)
+      doc.setFont("helvetica", "bold")
+      doc.setTextColor(...primary)
+      doc.text("HFN FUNILARIA", 105, 25, { align: "center" })
+    }
 
-      // Descrição
-      const descLines = doc.splitTextToSize(item.description, 115)
-      doc.text(descLines, 20, yPosition + 2)
-
-      doc.text(item.quantity.toString(), 140, yPosition + 2, { align: "center" })
-      doc.text(`R$ ${item.price.toFixed(2)}`, 162, yPosition + 2, { align: "right" })
-      doc.text(`R$ ${(item.quantity * item.price).toFixed(2)}`, 190, yPosition + 2, { align: "right" })
-
-      yPosition += 8
-    })
-
-    // Linha de separação
-    doc.setDrawColor(...primaryBlue)
-    doc.setLineWidth(0.5)
-    doc.line(15, yPosition, 195, yPosition)
-
-    yPosition += 8
-
-    // Total
-    const total = budgetItems.reduce((sum, item) => sum + item.quantity * item.price, 0)
-
-    doc.setFillColor(...primaryBlue)
-    doc.rect(130, yPosition - 3, 65, 12, "F")
+    // Subtítulo
     doc.setFontSize(12)
+    doc.setFont("helvetica", "normal")
+    doc.setTextColor(...white)
+
+    // Número do orçamento e data
+    const currentDate = new Date()
+    const dateStr = currentDate.toLocaleDateString("pt-BR")
+    const orcamentoNum = `ORÇ-${currentDate.getTime().toString().slice(-6)}`
+
+    doc.setFillColor(...white)
+    doc.roundedRect(140, 10, 60, 25, 3, 3, "F")
+    doc.setFontSize(9)
+    doc.setTextColor(...foreground)
     doc.setFont("helvetica", "bold")
-    doc.setTextColor(255, 255, 255)
-    doc.text("VALOR TOTAL:", 135, yPosition + 4)
-    doc.setFontSize(14)
-    doc.text(`R$ ${total.toFixed(2)}`, 190, yPosition + 4, { align: "right" })
-
-    yPosition += 20
-
-    // Observações
-    doc.setFontSize(8)
-    doc.setFont("helvetica", "italic")
-    doc.setTextColor(...lightGray)
-    doc.text("Observações:", 15, yPosition)
-    yPosition += 4
+    doc.text(`Nº: ${orcamentoNum}`, 170, 18, { align: "center" })
     doc.setFont("helvetica", "normal")
-    doc.text("• Orçamento válido por 15 dias a partir da data de emissão.", 15, yPosition)
-    yPosition += 4
-    doc.text("• Valores sujeitos a alteração sem aviso prévio.", 15, yPosition)
-    yPosition += 4
-    doc.text("• Garantia de 90 dias para serviços executados.", 15, yPosition)
-  }
+    doc.text(`Data: ${dateStr}`, 170, 24, { align: "center" })
+    doc.text(`Validade: 15 dias`, 170, 30, { align: "center" })
 
-  // Rodapé em todas as páginas
-  const pageCount = doc.getNumberOfPages()
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i)
+    yPosition = 55
 
-    // Linha superior do rodapé
-    doc.setDrawColor(...lightGray)
-    doc.setLineWidth(0.3)
-    doc.line(15, 280, 195, 280)
+    // Definir largura e posição dos cards lado a lado
+    const cardWidth = 87 // Largura de cada card
+    const cardHeight = 60 // Altura fixa para os cards
+    const cardSpacing = 6 // Espaçamento entre os cards
+    
+    // Posições X dos cards
+    const clientCardX = 15
+    const vehicleCardX = clientCardX + cardWidth + cardSpacing
 
-    // Informações da empresa
-    doc.setFontSize(8)
-    doc.setFont("helvetica", "normal")
-    doc.setTextColor(...lightGray)
-    doc.text("HFN Funilaria - Serviços Automotivos Especializados", 105, 285, { align: "center" })
-    doc.text("Telefone: (00) 0000-0000 | E-mail: contato@hfnfunilaria.com.br", 105, 289, { align: "center" })
-    doc.text(`Página ${i} de ${pageCount}`, 195, 289, { align: "right" })
-  }
+    // Dados do Cliente - Estilo Card (lado esquerdo)
+    doc.setFillColor(...bgMuted)
+    doc.setDrawColor(...border)
+    doc.roundedRect(clientCardX, yPosition, cardWidth, cardHeight, 3, 3, "FD")
+    
+    // Título do card do cliente
+    doc.setFontSize(11)
+    doc.setFont("helvetica", "bold")
+    doc.setTextColor(...foreground)
+    doc.text("Dados do Cliente", clientCardX + 10, yPosition + 10)
+    
+    // Linha separadora do card do cliente
+    doc.setDrawColor(...border)
+    doc.setLineWidth(0.5)
+    doc.line(clientCardX + 10, yPosition + 13, clientCardX + cardWidth - 10, yPosition + 13)
+    
+    // Dados do Veículo - Estilo Card (lado direito)
+    doc.setFillColor(...bgMuted)
+    doc.setDrawColor(...border)
+    doc.roundedRect(vehicleCardX, yPosition, cardWidth, cardHeight, 3, 3, "FD")
+    
+    // Título do card do veículo
+    doc.setFontSize(11)
+    doc.setFont("helvetica", "bold")
+    doc.setTextColor(...foreground)
+    doc.text("Dados do Veículo", vehicleCardX + 10, yPosition + 10)
+    
+    // Linha separadora do card do veículo
+    doc.setDrawColor(...border)
+    doc.setLineWidth(0.5)
+    doc.line(vehicleCardX + 10, yPosition + 13, vehicleCardX + cardWidth - 10, yPosition + 13)
+    
+    // Preencher dados do cliente
+    let clientYPos = yPosition + 20
+    doc.setFontSize(9) // Fonte um pouco menor para caber no card
+    
+    if (formData.client.name || formData.client.address || formData.client.phone || formData.client.email) {
+      if (formData.client.name) {
+        doc.setFont("helvetica", "bold")
+        doc.setTextColor(...mutedForeground)
+        doc.text("Nome:", clientCardX + 10, clientYPos)
+        doc.setFont("helvetica", "normal")
+        doc.setTextColor(...foreground)
+        doc.text(formData.client.name, clientCardX + 35, clientYPos)
+        clientYPos += 7
+      }
+      
+      if (formData.client.address) {
+        doc.setFont("helvetica", "bold")
+        doc.setTextColor(...mutedForeground)
+        doc.text("Endereço:", clientCardX + 10, clientYPos)
+        doc.setFont("helvetica", "normal")
+        doc.setTextColor(...foreground)
+        // Limitar o tamanho do texto para caber no card
+        const addressLines = doc.splitTextToSize(formData.client.address, cardWidth - 40)
+        doc.text(addressLines, clientCardX + 35, clientYPos)
+        clientYPos += addressLines.length * 7
+      }
+      
+      if (formData.client.phone) {
+        doc.setFont("helvetica", "bold")
+        doc.setTextColor(...mutedForeground)
+        doc.text("Telefone:", clientCardX + 10, clientYPos)
+        doc.setFont("helvetica", "normal")
+        doc.setTextColor(...foreground)
+        doc.text(formData.client.phone, clientCardX + 35, clientYPos)
+        clientYPos += 7
+      }
+      
+      if (formData.client.email) {
+        doc.setFont("helvetica", "bold")
+        doc.setTextColor(...mutedForeground)
+        doc.text("E-mail:", clientCardX + 10, clientYPos)
+        doc.setFont("helvetica", "normal")
+        doc.setTextColor(...foreground)
+        // Limitar o tamanho do email para caber no card
+        const emailLines = doc.splitTextToSize(formData.client.email, cardWidth - 40)
+        doc.text(emailLines, clientCardX + 35, clientYPos)
+        clientYPos += emailLines.length * 7
+      }
+    } else {
+      doc.setTextColor(...mutedForeground)
+      doc.text("Nenhum dado informado", clientCardX + 10, clientYPos)
+    }
+    
+    // Preencher dados do veículo
+    let vehicleYPos = yPosition + 20
+    doc.setFontSize(9) // Fonte um pouco menor para caber no card
+    
+    if (formData.vehicle.name || formData.vehicle.model || formData.vehicle.plate || formData.vehicle.year) {
+      if (formData.vehicle.name) {
+        doc.setFont("helvetica", "bold")
+        doc.setTextColor(...mutedForeground)
+        doc.text("Veículo:", vehicleCardX + 10, vehicleYPos)
+        doc.setFont("helvetica", "normal")
+        doc.setTextColor(...foreground)
+        doc.text(formData.vehicle.name, vehicleCardX + 35, vehicleYPos)
+        vehicleYPos += 7
+      }
+      
+      if (formData.vehicle.model) {
+        doc.setFont("helvetica", "bold")
+        doc.setTextColor(...mutedForeground)
+        doc.text("Modelo:", vehicleCardX + 10, vehicleYPos)
+        doc.setFont("helvetica", "normal")
+        doc.setTextColor(...foreground)
+        doc.text(formData.vehicle.model, vehicleCardX + 35, vehicleYPos)
+        vehicleYPos += 7
+      }
+      
+      if (formData.vehicle.plate) {
+        doc.setFont("helvetica", "bold")
+        doc.setTextColor(...mutedForeground)
+        doc.text("Placa:", vehicleCardX + 10, vehicleYPos)
+        doc.setFont("helvetica", "normal")
+        doc.setTextColor(...foreground)
+        doc.text(formData.vehicle.plate, vehicleCardX + 35, vehicleYPos)
+        vehicleYPos += 7
+      }
+      
+      if (formData.vehicle.year) {
+        doc.setFont("helvetica", "bold")
+        doc.setTextColor(...mutedForeground)
+        doc.text("Ano:", vehicleCardX + 10, vehicleYPos)
+        doc.setFont("helvetica", "normal")
+        doc.setTextColor(...foreground)
+        doc.text(formData.vehicle.year, vehicleCardX + 35, vehicleYPos)
+        vehicleYPos += 7
+      }
+    } else {
+      doc.setTextColor(...mutedForeground)
+      doc.text("Nenhum dado informado", vehicleCardX + 10, vehicleYPos)
+    }
+    
+    // Usar a maior altura entre os dois cards para definir a posição Y seguinte
+    yPosition = yPosition + cardHeight + 10
 
-  // Salvar PDF
-  const fileName = `HFN_Orcamento_${orcamentoNum}_${dateStr.replace(/\//g, "-")}.pdf`
-  doc.save(fileName)
+    // Itens do Orçamento - Estilo Card
+    doc.setFillColor(...bgMuted)
+    doc.setDrawColor(...border)
+    doc.roundedRect(15, yPosition, 180, 10 + (budgetItems.length * 15) + 20, 3, 3, "FD")
+    
+    // Título do card
+    doc.setFontSize(11)
+    doc.setFont("helvetica", "bold")
+    doc.setTextColor(...foreground)
+    doc.text("Itens do Orçamento", 25, yPosition + 10)
+    
+    // Linha separadora
+    doc.setDrawColor(...border)
+    doc.setLineWidth(0.5)
+    doc.line(25, yPosition + 13, 185, yPosition + 13)
+    
+    let itemsYPos = yPosition + 20
+    doc.setFontSize(10)
+    
+    if (budgetItems.length > 0) {
+      // Itens em formato de lista
+      budgetItems.forEach((item, index) => {
+        if (itemsYPos > 260) {
+          doc.addPage()
+          itemsYPos = 20
+        }
+        
+        // Descrição do item
+        doc.setFont("helvetica", "bold")
+        doc.setTextColor(...foreground)
+        const descLines = doc.splitTextToSize(item.description, 130)
+        doc.text(descLines, 25, itemsYPos)
+        
+        // Valor total do item (direita)
+        doc.setFont("helvetica", "semibold")
+        doc.text(`R$ ${(item.quantity * item.price).toFixed(2)}`, 185, itemsYPos, { align: "right" })
+        
+        // Quantidade e valor unitário (abaixo da descrição)
+        doc.setFontSize(8)
+        doc.setFont("helvetica", "normal")
+        doc.setTextColor(...mutedForeground)
+        doc.text(`${item.quantity} × R$ ${item.price.toFixed(2)}`, 25, itemsYPos + 5)
+        
+        // Linha separadora entre itens (exceto o último)
+        if (index < budgetItems.length - 1) {
+          doc.setDrawColor(...border)
+          doc.setLineWidth(0.2)
+          doc.line(25, itemsYPos + 8, 185, itemsYPos + 8)
+        }
+        
+        itemsYPos += 15
+      })
+      
+      // Linha separadora para o total
+      doc.setDrawColor(...primary)
+      doc.setLineWidth(1)
+      doc.line(25, itemsYPos, 185, itemsYPos)
+      
+      // Total
+      const total = budgetItems.reduce((sum, item) => sum + item.quantity * item.price, 0)
+      
+      itemsYPos += 10
+      
+      // Texto "TOTAL"
+      doc.setFontSize(11)
+      doc.setFont("helvetica", "bold")
+      doc.setTextColor(...foreground)
+      doc.text("TOTAL:", 25, itemsYPos)
+      
+      // Valor total
+      doc.setFontSize(14)
+      doc.setFont("helvetica", "bold")
+      doc.setTextColor(...primary)
+      doc.text(`R$ ${total.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 185, itemsYPos, { align: "right" })
+      
+      yPosition = itemsYPos + 15
+    } else {
+      doc.setTextColor(...mutedForeground)
+      doc.text("Nenhum item adicionado", 25, itemsYPos)
+      yPosition = itemsYPos + 15
+    }
+
+    // Rodapé em todas as páginas
+    const pageCount = doc.getNumberOfPages()
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i)
+
+      // Linha superior do rodapé
+      doc.setDrawColor(...border)
+      doc.setLineWidth(0.5)
+      doc.line(15, 280, 195, 280)
+
+      // Informações da empresa
+      doc.setFillColor(...primary)
+      doc.setFontSize(8)
+      doc.setFont("helvetica", "bold")
+      doc.setTextColor(...foreground)
+      doc.text("HFN - Martelinho de Ouro", 105, 285, { align: "center" })
+      doc.setFont("helvetica", "normal")
+      doc.setTextColor(...mutedForeground)
+      doc.text("Telefone: (11) 98646-1743 | E-mail: honofelipe_neto@gmail.com", 105, 289, { align: "center" })
+      doc.text(`Página ${i} de ${pageCount}`, 195, 289, { align: "right" })
+    }
+
+    // Se houver callback, chama-o com o documento
+    if (callback && typeof callback === 'function') {
+      callback(doc);
+    } else {
+      // Comportamento padrão: salvar o PDF
+      const fileName = `HFN_Orcamento_${orcamentoNum}_${dateStr.replace(/\//g, "-")}.pdf`
+      doc.save(fileName);
+    }
+  })
 }
