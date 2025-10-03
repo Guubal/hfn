@@ -38,4 +38,20 @@ document.addEventListener('DOMContentLoaded', function() {
   if (previewIconElement) {
     previewIconElement.innerHTML = icons.previewPdf;
   }
+  
+  // Inserir ícones para os botões do recibo
+  const receiptSaveIconElement = document.getElementById('receipt-save-icon');
+  if (receiptSaveIconElement) {
+    receiptSaveIconElement.innerHTML = icons.savePdf;
+  }
+  
+  const receiptPreviewIconElement = document.getElementById('receipt-preview-icon');
+  if (receiptPreviewIconElement) {
+    receiptPreviewIconElement.innerHTML = icons.previewPdf;
+  }
+  
+  const receiptShareIconElement = document.getElementById('receipt-share-icon');
+  if (receiptShareIconElement) {
+    receiptShareIconElement.innerHTML = icons.share;
+  }
 });

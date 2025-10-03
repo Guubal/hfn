@@ -21,12 +21,27 @@ const formData = {
     plate: "",
     year: "",
   },
+  receipt: {
+    value: "",
+    paymentMethod: "",
+    paymentDetails: "",
+    date: "",
+    notes: "",
+  },
 }
 
 // Inicialização
 document.addEventListener("DOMContentLoaded", () => {
   updateStepDisplay()
   updateNavigationButtons()
+  
+  // Adicionar event listeners para as abas
+  document.querySelectorAll(".tab-button").forEach(button => {
+    button.addEventListener("click", () => {
+      const tabId = button.getAttribute("data-tab")
+      switchTab(tabId)
+    })
+  })
 })
 
 // Navegação entre etapas
@@ -41,7 +56,23 @@ function nextStep() {
     updateNavigationButtons()
 
     if (currentStep === 4) {
+      // Garantir que as abas estejam inicializadas corretamente
+      console.log("Etapa 4 ativada - inicializando abas")
+      
+      // Certificar que a primeira aba está ativa
+      document.querySelectorAll(".tab-button").forEach(button => {
+        button.classList.remove("active")
+      })
+      
+      document.querySelectorAll(".tab-content").forEach(content => {
+        content.classList.remove("active")
+      })
+      
+      document.querySelector('.tab-button[data-tab="budget"]').classList.add("active")
+      document.getElementById('tab-budget').classList.add("active")
+      
       renderPreview()
+      updateReceiptPreview()
     }
 
     if (currentStep === 3) {
@@ -135,6 +166,42 @@ function updateNavigationButtons() {
   }
 }
 
+// Função para alternar entre as abas
+function switchTab(tabId) {
+  console.log(`Alternando para a aba: ${tabId}`)
+  
+  // Remover classe active de todas as abas
+  document.querySelectorAll(".tab-button").forEach(button => {
+    button.classList.remove("active")
+  })
+  
+  document.querySelectorAll(".tab-content").forEach(content => {
+    content.classList.remove("active")
+  })
+  
+  // Adicionar classe active à aba selecionada
+  const tabButton = document.querySelector(`.tab-button[data-tab="${tabId}"]`)
+  const tabContent = document.getElementById(`tab-${tabId}`)
+  
+  if (tabButton && tabContent) {
+    tabButton.classList.add("active")
+    tabContent.classList.add("active")
+    
+    // Atualizar a prévia conforme a aba selecionada
+    if (tabId === "receipt") {
+      updateReceiptPreview()
+    } else if (tabId === "budget") {
+      renderPreview()
+    }
+    
+    console.log(`Aba ${tabId} ativada com sucesso`)
+  } else {
+    console.error(`Erro ao alternar para a aba: ${tabId}. Elementos não encontrados.`)
+    console.log('tabButton:', tabButton)
+    console.log('tabContent:', tabContent)
+  }
+}
+
 function saveCurrentStepData() {
   if (currentStep === 1) {
     formData.client.name = document.getElementById("client-name").value
@@ -146,6 +213,15 @@ function saveCurrentStepData() {
     formData.vehicle.model = document.getElementById("vehicle-model").value
     formData.vehicle.plate = document.getElementById("vehicle-plate").value
     formData.vehicle.year = document.getElementById("vehicle-year").value
+  } else if (currentStep === 4) {
+    // Na etapa 4, salvar os dados do recibo quando a aba de recibo estiver ativa
+    if (document.getElementById("tab-receipt").classList.contains("active")) {
+      formData.receipt.value = document.getElementById("receipt-value").value
+      formData.receipt.paymentMethod = document.getElementById("receipt-payment-method").value
+      formData.receipt.paymentDetails = document.getElementById("receipt-payment-details").value
+      formData.receipt.date = document.getElementById("receipt-date").value
+      formData.receipt.notes = document.getElementById("receipt-notes").value
+    }
   }
 }
 
@@ -227,6 +303,140 @@ function updateTotalDisplay() {
 }
 
 // Preview e geração de PDF
+// Função para atualizar a prévia do recibo
+function updateReceiptPreview() {
+  const container = document.getElementById("receipt-preview")
+  const receiptValue = document.getElementById("receipt-value").value
+  const paymentMethod = document.getElementById("receipt-payment-method")
+  const paymentDetails = document.getElementById("receipt-payment-details").value
+  const receiptDate = document.getElementById("receipt-date").value
+  const receiptNotes = document.getElementById("receipt-notes").value
+  
+  // Mostrar/esconder o campo de detalhes do pagamento
+  const detailsContainer = document.getElementById("receipt-payment-details-container")
+  if (paymentMethod.value && ["cartao_credito", "pix", "transferencia", "outro"].includes(paymentMethod.value)) {
+    detailsContainer.style.display = "block"
+  } else {
+    detailsContainer.style.display = "none"
+  }
+  
+  // Se não tiver valor, mostrar mensagem vazia
+  if (!receiptValue) {
+    container.innerHTML = '<p class="empty-message">Preencha os dados acima para visualizar a prévia do recibo</p>'
+    return
+  }
+  
+  // Formatação do valor
+  const formattedValue = Number(receiptValue).toLocaleString("pt-BR", { 
+    style: "currency", 
+    currency: "BRL" 
+  })
+  
+  // Formatação da data
+  let formattedDate = ""
+  if (receiptDate) {
+    const date = new Date(receiptDate)
+    formattedDate = date.toLocaleDateString("pt-BR")
+  } else {
+    const today = new Date()
+    formattedDate = today.toLocaleDateString("pt-BR")
+  }
+  
+  // Obter o nome do método de pagamento selecionado
+  let paymentMethodText = ""
+  if (paymentMethod.value) {
+    paymentMethodText = paymentMethod.options[paymentMethod.selectedIndex].text
+  }
+  
+  // Gerar o HTML do recibo
+  let html = `
+    <div class="receipt-header">
+      <div class="receipt-title">RECIBO DE PAGAMENTO</div>
+      <div class="receipt-subtitle">HFN Funilaria - Martelinho de Ouro</div>
+    </div>
+    
+    <div class="receipt-body">
+      <div class="receipt-row">
+        <span class="receipt-label">Valor:</span>
+        <span class="receipt-value-highlight">${formattedValue}</span>
+      </div>
+      
+      <div class="receipt-row">
+        <span class="receipt-label">Data:</span>
+        <span class="receipt-value">${formattedDate}</span>
+      </div>
+  `
+  
+  // Cliente
+  if (formData.client.name) {
+    html += `
+      <div class="receipt-row">
+        <span class="receipt-label">Cliente:</span>
+        <span class="receipt-value">${formData.client.name}</span>
+      </div>
+    `
+  }
+  
+  // Veículo
+  if (formData.vehicle.name) {
+    let vehicleInfo = formData.vehicle.name
+    if (formData.vehicle.plate) {
+      vehicleInfo += ` - ${formData.vehicle.plate}`
+    }
+    html += `
+      <div class="receipt-row">
+        <span class="receipt-label">Veículo:</span>
+        <span class="receipt-value">${vehicleInfo}</span>
+      </div>
+    `
+  }
+  
+  // Forma de pagamento
+  if (paymentMethodText) {
+    html += `
+      <div class="receipt-row">
+        <span class="receipt-label">Forma de Pagamento:</span>
+        <span class="receipt-value">${paymentMethodText}</span>
+      </div>
+    `
+    
+    // Detalhes do pagamento
+    if (paymentDetails) {
+      html += `
+        <div class="receipt-row">
+          <span class="receipt-label">Detalhes:</span>
+          <span class="receipt-value">${paymentDetails}</span>
+        </div>
+      `
+    }
+  }
+  
+  // Observações
+  if (receiptNotes) {
+    html += `
+      <div class="receipt-row">
+        <span class="receipt-label">Observações:</span>
+        <span class="receipt-value">${receiptNotes}</span>
+      </div>
+    `
+  }
+  
+  html += `
+    </div>
+    
+    <div class="receipt-footer">
+      Recebemos o valor acima descrito referente aos serviços prestados.
+    </div>
+    
+    <div class="receipt-signature">
+      <div class="receipt-signature-line"></div>
+      <div class="receipt-signature-label">HFN Funilaria - CNPJ XX.XXX.XXX/0001-XX</div>
+    </div>
+  `
+  
+  container.innerHTML = html
+}
+
 function renderPreview() {
   const container = document.getElementById("preview-content")
   const total = budgetItems.reduce((sum, item) => sum + item.quantity * item.price, 0)

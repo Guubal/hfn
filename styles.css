@@ -40,7 +40,59 @@ body {
 .header-flex {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.header-tab-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.header-tab-button:hover {
+  color: var(--foreground);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header-tab-button.active {
+  color: white;
+  background-color: var(--primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para o modo de recibo */
+.receipt-container {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-top: 1rem;
+}
+
+.receipt-card {
+  width: 100%;
+  max-width: 100%;
+}
+
+body.receipt-mode .main-content {
+  padding-top: 1rem;
+}
+
+body.budget-mode .main-content {
+  padding-top: 2rem;
 }
 
 .logo-box {
@@ -734,6 +786,203 @@ body {
   width: 100%;
   height: 100%;
   background-color: white;
+}
+
+/* Estilos para o formulário de recibo */
+.form-select {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background-color: var(--input);
+  color: var(--foreground);
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237d7d8a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 1rem;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(91, 112, 152, 0.1);
+}
+
+textarea {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background-color: var(--input);
+  color: var(--foreground);
+  transition: all 0.2s ease;
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(91, 112, 152, 0.1);
+}
+
+/* Estilos para a prévia do recibo */
+.receipt-preview {
+  background-color: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-top: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.receipt-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.receipt-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.receipt-subtitle {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.receipt-body {
+  margin-bottom: 1.5rem;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.receipt-row:last-child {
+  border-bottom: none;
+}
+
+.receipt-label {
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.receipt-value {
+  color: var(--foreground);
+}
+
+.receipt-value-highlight {
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.receipt-footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.receipt-signature {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.receipt-signature-line {
+  width: 60%;
+  height: 1px;
+  background-color: var(--border);
+  margin-bottom: 0.5rem;
+}
+
+.receipt-signature-label {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+/* Estilos para as abas */
+.tabs-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.tabs-header {
+  display: flex;
+  border-bottom: 3px solid var(--border);
+  margin-bottom: 2rem;
+  overflow-x: auto; /* Para garantir que as abas sejam visíveis em telas pequenas */
+  background-color: var(--muted);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.tab-button {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  background-color: transparent;
+  border: none;
+  border-bottom: 4px solid transparent;
+  margin-bottom: -3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 140px;
+  text-align: center;
+  position: relative;
+}
+
+.tab-button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  color: var(--foreground);
+}
+
+.tab-button.active {
+  color: var(--primary);
+  border-bottom: 4px solid var(--primary);
+  background-color: white;
+  font-weight: 700;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+  width: 100%;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (max-width: 640px) {
