@@ -63,28 +63,14 @@ function loadReceiptContent() {
       // Atualizar a visibilidade dos elementos
       updateVisibilityBasedOnMode();
       
+      // Inicializar os event listeners do recibo
+      if (typeof initializeReceiptListeners === 'function') {
+        initializeReceiptListeners();
+      }
+      
       // Inicializar a prévia do recibo
       if (typeof updateReceiptPreview === 'function') {
         updateReceiptPreview();
-      }
-      
-      // Adicionar event listeners para o formulário de recibo
-      const paymentMethodSelect = document.getElementById('receipt-payment-method');
-      if (paymentMethodSelect) {
-        paymentMethodSelect.addEventListener('change', function() {
-          const detailsContainer = document.getElementById('receipt-payment-details-container');
-          if (detailsContainer) {
-            if (['cartao_credito', 'pix', 'transferencia', 'outro'].includes(this.value)) {
-              detailsContainer.style.display = 'block';
-            } else {
-              detailsContainer.style.display = 'none';
-            }
-          }
-          
-          if (typeof updateReceiptPreview === 'function') {
-            updateReceiptPreview();
-          }
-        });
       }
     })
     .catch(error => {

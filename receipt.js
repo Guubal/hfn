@@ -1,21 +1,35 @@
 // Funções para gerenciar o recibo de pagamento
 
-document.addEventListener("DOMContentLoaded", () => {
+// Função para inicializar os event listeners do recibo
+function initializeReceiptListeners() {
   // Inicializar a data com a data atual
   const today = new Date()
   const formattedDate = today.toISOString().split('T')[0] // Formato YYYY-MM-DD para input date
-  document.getElementById("receipt-date").value = formattedDate
+  const receiptDateInput = document.getElementById("receipt-date")
+  if (receiptDateInput) {
+    receiptDateInput.value = formattedDate
+  }
   
   // Adicionar event listeners para os campos do recibo
-  document.getElementById("receipt-value").addEventListener("input", updateReceiptPreview)
-  document.getElementById("receipt-payment-method").addEventListener("change", updateReceiptPreview)
-  document.getElementById("receipt-payment-details").addEventListener("input", updateReceiptPreview)
-  document.getElementById("receipt-date").addEventListener("change", updateReceiptPreview)
-  document.getElementById("receipt-notes").addEventListener("input", updateReceiptPreview)
-})
+  const receiptValue = document.getElementById("receipt-value")
+  const receiptPaymentMethod = document.getElementById("receipt-payment-method")
+  const receiptPaymentDetails = document.getElementById("receipt-payment-details")
+  const receiptDate = document.getElementById("receipt-date")
+  const receiptNotes = document.getElementById("receipt-notes")
+  const receiptClientName = document.getElementById("receipt-client-name")
+  const receiptClientDocument = document.getElementById("receipt-client-document")
+  
+  if (receiptValue) receiptValue.addEventListener("input", updateReceiptPreview)
+  if (receiptPaymentMethod) receiptPaymentMethod.addEventListener("change", updateReceiptPreview)
+  if (receiptPaymentDetails) receiptPaymentDetails.addEventListener("input", updateReceiptPreview)
+  if (receiptDate) receiptDate.addEventListener("change", updateReceiptPreview)
+  if (receiptNotes) receiptNotes.addEventListener("input", updateReceiptPreview)
+  if (receiptClientName) receiptClientName.addEventListener("input", updateReceiptPreview)
+  if (receiptClientDocument) receiptClientDocument.addEventListener("input", updateReceiptPreview)
+}
 
 // Função para gerar PDF do recibo
-function generateReceiptPDF() {
+function generateReceiptPDF(callback) {
   // Carregar o logo antes de gerar o PDF
   getImageBase64('https://raw.githubusercontent.com/Guubal/hfn/main/logo.png', function(base64Logo, imgWidth, imgHeight) {
     const { jsPDF } = window.jspdf
@@ -147,29 +161,26 @@ function generateReceiptPDF() {
     yPosition += 10
     
     // Cliente
-    if (formData.client.name) {
+    const clientName = document.getElementById("receipt-client-name")?.value || ""
+    const clientDocument = document.getElementById("receipt-client-document")?.value || ""
+    
+    if (clientName) {
       doc.setFont("helvetica", "bold")
       doc.setTextColor(...mutedForeground)
       doc.text("Cliente:", 30, yPosition)
       doc.setFont("helvetica", "normal")
       doc.setTextColor(...foreground)
-      doc.text(formData.client.name, 60, yPosition)
+      doc.text(clientName, 60, yPosition)
       yPosition += 10
     }
     
-    // Veículo
-    if (formData.vehicle.name) {
-      let vehicleInfo = formData.vehicle.name
-      if (formData.vehicle.plate) {
-        vehicleInfo += ` - ${formData.vehicle.plate}`
-      }
-      
+    if (clientDocument) {
       doc.setFont("helvetica", "bold")
       doc.setTextColor(...mutedForeground)
-      doc.text("Veículo:", 30, yPosition)
+      doc.text("CPF/CNPJ:", 30, yPosition)
       doc.setFont("helvetica", "normal")
       doc.setTextColor(...foreground)
-      doc.text(vehicleInfo, 60, yPosition)
+      doc.text(clientDocument, 60, yPosition)
       yPosition += 10
     }
     
@@ -251,9 +262,14 @@ function generateReceiptPDF() {
     doc.setTextColor(...mutedForeground)
     doc.text("Telefone: (11) 98646-1743 | E-mail: honofelipe_neto@gmail.com", 105, 289, { align: "center" })
     
-    // Salvar o PDF
-    const fileName = `HFN_Recibo_${receiptNum}_${dateStr.replace(/\//g, "-")}.pdf`
-    doc.save(fileName)
+    // Se houver callback, chama-o com o documento
+    if (callback && typeof callback === 'function') {
+      callback(doc)
+    } else {
+      // Comportamento padrão: salvar o PDF
+      const fileName = `HFN_Recibo_${receiptNum}_${dateStr.replace(/\//g, "-")}.pdf`
+      doc.save(fileName)
+    }
   })
 }
 
@@ -304,12 +320,11 @@ function shareReceiptPDF() {
         text: "Segue o recibo em PDF da HFN Funilaria!",
         files: [file]
       }).catch((err) => {
+        console.error("Erro ao compartilhar:", err)
         alert("Erro ao compartilhar: " + err.message)
       })
     } else {
-      // Caso não dê pra compartilhar, salva e avisa usuário
-      doc.save(`Recibo_HFN_${receiptNum}.pdf`)
-      alert("Seu navegador não permite compartilhar arquivos PDF diretamente. O arquivo foi baixado, envie manualmente pelo WhatsApp ou outro app.")
+      alert("Seu navegador não permite compartilhar arquivos PDF diretamente. Por favor, use o botão 'Salvar PDF' e envie manualmente.")
     }
   })
 }
